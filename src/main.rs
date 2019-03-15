@@ -45,6 +45,16 @@ impl_web! {
                 message: "hello world",
             })
         }
+
+        #[get("/vec")]
+        #[content_type("json")]
+        fn get_vec(&self) -> Result<Vec<usize>, ()> {
+            let mut vec = Vec::new();
+            vec.push(1);
+            vec.push(5);
+
+            Ok(vec)
+        }
     }
 }
 
