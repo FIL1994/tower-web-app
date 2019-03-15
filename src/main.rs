@@ -5,6 +5,7 @@ use tower_web::middleware::deflate::DeflateMiddleware;
 use tower_web::ServiceBuilder;
 
 use flate2::Compression;
+use std::str;
 
 #[derive(Clone, Debug)]
 struct HelloWorld;
@@ -54,6 +55,17 @@ impl_web! {
             vec.push(5);
 
             Ok(vec)
+        }
+
+        #[post("/request-body")]
+        #[content_type("text/plain")]
+        fn request_body(&self, body: Vec<u8>) -> Result<String, ()> {
+            Ok(format!("We received: \n{}", str::from_utf8(&body).unwrap()))
+        }
+
+        #[post("/request-body-length")]
+        fn request_body_length(&self, body: Vec<u8>) -> Result<String, ()> {
+            Ok(format!("We received {} bytes", body.len()))
         }
     }
 }
