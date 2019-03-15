@@ -64,7 +64,7 @@ impl_web! {
         }
 
         #[post("/request-body")]
-        #[content_type("text/plain")]
+        #[content_type("plain")]
         fn request_body(&self, body: Vec<u8>) -> Result<String, ()> {
             Ok(format!("We received: \n{}", str::from_utf8(&body).unwrap()))
         }
