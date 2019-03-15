@@ -10,7 +10,7 @@ use std::str;
 #[derive(Clone, Debug)]
 struct HelloWorld;
 
-#[derive(Debug, Extract)]
+#[derive(Debug, Extract, Response)]
 struct MyData {
     foo: usize,
     bar: Option<String>,
@@ -37,6 +37,12 @@ impl_web! {
         #[post("/data")]
         fn data(&self, body: MyData) -> Result<String, ()> {
             Ok(format!("Hello, {:?}", body))
+        }
+
+        #[post("/return-data")]
+        #[content_type("json")]
+        fn return_data(&self, body: MyData) -> Result<MyData, ()> {
+            Ok(body)
         }
 
         #[get("/json")]
