@@ -1233,6 +1233,7 @@ dependencies = [
 name = "tower-web-app"
 version = "0.1.0"
 dependencies = [
+ "flate2 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "http 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -1,7 +1,10 @@
 #[macro_use]
 extern crate tower_web;
 
+use tower_web::middleware::deflate::DeflateMiddleware;
 use tower_web::ServiceBuilder;
+
+use flate2::Compression;
 
 #[derive(Clone, Debug)]
 struct HelloWorld;
@@ -51,6 +54,7 @@ pub fn main() {
 
     ServiceBuilder::new()
         .resource(HelloWorld)
+        .middleware(DeflateMiddleware::new(Compression::best()))
         .run(&addr)
         .unwrap();
 }
