@@ -79,8 +79,8 @@ impl_web! {
 
         #[post("/request-body")]
         #[content_type("plain")]
-        fn request_body(&self, body: Vec<u8>, param: MyParam) -> Result<String, ()> {
-            Ok(format!("{} We received: \n{}", param.bar, str::from_utf8(&body).unwrap()))
+        fn request_body(&self, body: Vec<u8>) -> Result<String, ()> {
+            Ok(format!("We received: \n{}", str::from_utf8(&body).unwrap()))
         }
 
         #[post("/request-body-length")]
@@ -116,11 +116,8 @@ impl_web! {
     }
 }
 
-struct MyConfig {
-    foo: String,
-}
+struct MyConfig {}
 struct MyParam {
-    bar: String,
     connection: diesel::SqliteConnection,
 }
 
@@ -128,7 +125,7 @@ impl<B: BufStream> Extract<B> for MyParam {
     type Future = Immediate<MyParam>;
 
     fn extract(context: &Context) -> Self::Future {
-        let config = context.config::<MyConfig>().unwrap();
+        let _config = context.config::<MyConfig>().unwrap();
 
         dotenv().ok();
 
@@ -136,20 +133,7 @@ impl<B: BufStream> Extract<B> for MyParam {
         let conn = SqliteConnection::establish(&database_url)
             .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
 
-        let expense = NewExpense {
-            name: "Expense 10",
-            amount: 18.20,
-        };
-
-        // diesel::insert_into(schema::expenses::table)
-        //     .values(&expense)
-        //     .execute(&conn)
-        //     .expect("Error saving expense");
-
-        let param = MyParam {
-            bar: config.foo.clone(),
-            connection: conn,
-        };
+        let param = MyParam { connection: conn };
         Immediate::ok(param)
     }
 }
@@ -160,9 +144,7 @@ pub fn main() {
 
     ServiceBuilder::new()
         .resource(HelloWorld)
-        .config(MyConfig {
-            foo: "bar".to_owned(),
-        })
+        .config(MyConfig {})
         .middleware(DeflateMiddleware::new(Compression::best()))
         .run(&addr)
         .unwrap();
